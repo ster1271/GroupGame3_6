@@ -2,8 +2,8 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define	SCREEN_SIZE_X	640		//X方向の画面サイズを指定
-#define	SCREEN_SIZE_Y	480		//Y方向の画面サイズを指定
+#define	SCREEN_SIZE_X	1280		//X方向の画面サイズを指定
+#define	SCREEN_SIZE_Y	720		//Y方向の画面サイズを指定
 
 //設定フレームレート（60FPS）
 #define FRAME_RATE	(60)

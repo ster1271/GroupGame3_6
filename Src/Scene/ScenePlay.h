@@ -1,9 +1,19 @@
 #pragma once
 
+
+#define BG_HUNDLE_PATH		"Data/Playimage/karibackground2.png"
+
+//‰æ‘œ\‘¢‘Ì
+struct Hundl
+{
+	int BgHndl;		//”wŒi‰æ‘œŠi”[•Ï”
+
+};
+
 class Play
 {
 private:
-	
+	Hundl Hndl;
 
 public:
 	//ƒvƒŒƒC‰Šú‰»
