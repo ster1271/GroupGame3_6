@@ -3,13 +3,13 @@
 #include "SceneTitle.h"
 #include "../Input/Input.h"
 
-int T_titlHandle;
+int T_TitlHandle;
 
 //タイトル初期化
 void Title::InitTitle()
 {
 	//タイトル画像読み込み
-	T_titlHandle = LoadGraph(T_TITLE_NAME_PATH);
+	T_TitlHandle = LoadGraph(T_TITLE_NAME_PATH);
 	//タイトルループシーンへ移動
 	g_CurrentSceneID = SCENE_ID_LOOP_TITLE;
 }
@@ -29,7 +29,7 @@ void Title::StepTitle()
 //タイトル描画処理
 void Title::DrawTitle()
 {
-	DrawGraph(0, 0, T_titlHandle, true);
+	DrawGraph(0, 0, T_TitlHandle, true);
 	DrawString(0,0, "タイトルシーンです", GetColor(255, 255, 255));
 }
 
