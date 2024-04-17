@@ -2,11 +2,15 @@
 
 
 #define BG_HUNDLE_PATH		"Data/Playimage/karibackground2.png"
+#define GAUGE_HUNDLE_PATH	"Data/Playimage/ゲージ(仮).png"
+
+#define MAX_GAUGE_NUM	(100)		//ゲージの最大分割数
 
 //画像構造体
 struct Hundl
 {
-	int BgHndl;		//背景画像格納変数
+	int BgHndl;		//背景画像ハンドル
+	int GaugeHndl[MAX_GAUGE_NUM];	//ゲージハンドル
 
 };
 

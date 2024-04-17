@@ -9,7 +9,9 @@
 //プレイ初期化
 void Play::InitPlay()
 {
-	Hndl.BgHndl = LoadGraph(BG_HUNDLE_PATH);
+	Hndl.BgHndl = LoadGraph(BG_HUNDLE_PATH);	//背景画像読み込み
+	LoadDivGraph(GAUGE_HUNDLE_PATH, 100, 100, 1, 6, 300, Hndl.GaugeHndl);		//ゲージ分割読み込み			
+
 	Gauge = 0.0f;			//ゲージ
 	GaugeFlg = 0;
 	IsGauge = true;
@@ -55,6 +57,7 @@ void Play::DrawPlay()
 	DrawString(0, 15, "Enterで次のシーンにいく", GetColor(255, 0, 0));
 
 	DrawFormatString(0, 45, GetColor(0, 0, 255), "ゲージの量：%f", Gauge);
+	//DrawGraph(0, 60, Hndl.GaugeHndl[(int)Gauge], true);
 
 }
 
