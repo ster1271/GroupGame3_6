@@ -39,7 +39,7 @@ SCENE_ID g_CurrentSceneID = SCENE_ID_INIT_TITLE;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	//ウィンドウの状態を設定する
-	ChangeWindowMode(false);
+	ChangeWindowMode(true);
 
 	//DXライブラリの初期化
 	if (DxLib_Init() == -1) {
