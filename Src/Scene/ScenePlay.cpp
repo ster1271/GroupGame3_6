@@ -12,7 +12,10 @@ void Play::InitPlay()
 	Hndl.BgHndl = LoadGraph(BG_HUNDLE_PATH);
 	Gauge = 0.0f;			//ゲージ
 	GaugeFlg = 0;
+	IsGauge = true;
 
+	FlameCount = 0.0f;
+	GaugeUp = 0.1f;
 
 	//シーンをプレイ通常処理のシーンへ移動
 	g_CurrentSceneID = SCENE_ID_LOOP_PLAY;
@@ -22,29 +25,18 @@ void Play::InitPlay()
 void Play::StepPlay()
 {
 	
-
-	//ゲージの増減(仮置き)
-	switch (GaugeFlg)
+	//ゲージ処理
+	if (IsGauge == true)
 	{
-	case 0:
-		Gauge += 0.2f;
-		if (Gauge > 100)
-		{
-			GaugeFlg = 1;
-		}
-		break;
-
-	case 1:
-		Gauge -= 0.2f;
-		if (Gauge < 0)
-		{
-			GaugeFlg = 0;
-		}
-		break;
-
-	default:
-		break;
+		GaugeUpDown();
 	}
+
+	//スペースキーでゲージの増加フラグをおる
+	if (IsKeyPush(KEY_INPUT_SPACE))
+	{
+		IsGauge = false;
+	}
+	
 
 	//Enterキーを押す
 	if (IsKeyPush(KEY_INPUT_RETURN))
@@ -75,4 +67,46 @@ void Play::FinPlay()
 }
 
 
+//ゲージ増減関数
+void Play::GaugeUpDown()
+{
+	if (FlameCount % 5 == 0)
+	{
+		if (GaugeFlg == 0)
+		{
+			GaugeUp += 0.02f;
+		}
+		else if (GaugeFlg == 1)
+		{
+			GaugeUp -= 0.02f;
+		}
+	}
 
+	if (GaugeUp < 0.1f)
+	{
+		GaugeUp = 0.1f;
+	}
+
+	//ゲージの増減(仮置き)
+	switch (GaugeFlg)
+	{
+	case 0:
+		Gauge += GaugeUp;
+		if (Gauge > 101.0f)
+		{
+			GaugeFlg = 1;
+		}
+		break;
+
+	case 1:
+		Gauge -= GaugeUp;
+		if (Gauge < 0.0f)
+		{
+			GaugeFlg = 0;
+		}
+		break;
+
+	default:
+		break;
+	}
+}
