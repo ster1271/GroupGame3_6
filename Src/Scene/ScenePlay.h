@@ -10,10 +10,15 @@ struct Hundl
 
 };
 
+
+
 class Play
 {
 private:
 	Hundl Hndl;
+
+	int GaugeFlg;
+	float Gauge;		//ゲージ
 
 public:
 	//プレイ初期化
