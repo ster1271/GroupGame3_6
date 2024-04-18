@@ -35,38 +35,37 @@ void Result::StepResult()
 {
 
 	//Enterキーを押す
-	if (IsKeyPush(KEY_INPUT_RETURN))
+	if (IsKeyPush(KEY_INPUT_A) || IsKeyPush(KEY_INPUT_LEFT))	//Aキーまたは左矢印キーが押されたら
 	{
-		if (IsKeyPush(KEY_INPUT_A) || IsKeyPush(KEY_INPUT_LEFT))	//Aキーまたは左矢印キーが押されたら
+		if (R_ResultPoxX == 650)
 		{
-			if (R_ResultPoxX == 650)
-			{
-				R_ResultPoxX = 150;	//隣に移動する
-			}
+			R_ResultPoxX = 150;	//隣に移動する
+		}
+	}
+
+	else if (IsKeyPush(KEY_INPUT_D) || IsKeyPush(KEY_INPUT_RIGHT))	//Dキーまたは右矢印キーが押されたら
+	{
+		if (R_ResultPoxX == 150)
+		{
+			R_ResultPoxX = 650;	//隣に移動する
+		}
+	}
+
+	else if (IsKeyPush(KEY_INPUT_RETURN))	//エンターキーを押すと
+	{
+		if (R_ResultPoxX == 150)
+		{
+			R_Continue = true;	//コンテニューフラグを立てる
 		}
 
-		else if (IsKeyPush(KEY_INPUT_D) || IsKeyPush(KEY_INPUT_RIGHT))	//Dキーまたは右矢印キーが押されたら
+		else if (R_ResultPoxX == 650)
 		{
-			if (R_ResultPoxX == 150)
-			{
-				R_ResultPoxX = 650;	//隣に移動する
-			}
+			R_BackTitle = true;	//タイトルフラグを折る
 		}
-
-		if (IsKeyPush(KEY_INPUT_RETURN))	//エンターキーを押すと
-		{
-			if (R_ResultPoxX == 150)
-			{
-				R_Continue = true;	//コンテニューフラグを立てる
-			}
-
-			else if (R_ResultPoxX == 650)
-			{
-				R_BackTitle = true;	//タイトルフラグを折る
-			}
+	
 			//リザルト後処理シーンへ移動
 			g_CurrentSceneID = SCENE_ID_FIN_RESULT;
-		}
+		
 	}
 }
 
@@ -90,6 +89,5 @@ void Result::FinResult()
 	{
 		g_CurrentSceneID = SCENE_ID_INIT_TITLE;	//タイトルシーンに戻る
 	}
-	//タイトル初期化シーンへ移動
-	g_CurrentSceneID = SCENE_ID_INIT_TITLE;
+	
 }
