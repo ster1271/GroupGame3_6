@@ -3,23 +3,37 @@
 #include "SceneResult.h"
 #include "../Input/Input.h"
 
-int R_Result_ScoreHandle;
+int R_Result_Score_Handle;
 int R_Result_Player1_WIN_Handle;
 int R_Result_Player2_WIN_Handle;
+int R_Result_Win_Score_Handle;
 
-int R_ResultPoxX;
+int R_ResultPoxX; //座標
 
 bool R_Continue;	//コンテニューフラグ
 
 bool R_BackTitle;	//タイトルフラグ
 
+bool R_Wins_Score;
+
+int images[RLSULT]; // 画像を格納する配列
+int currentImageIndex = 0; // 現在の画像のインデックス
+
 //タイトル初期化
 void Result::InitResult()
 {
-	R_Result_ScoreHandle = LoadGraph(RISULT_SCORE);
-	R_Result_Player1_WIN_Handle = LoadGraph(RISULT_PLAYER_1_WINS);
-	R_Result_Player2_WIN_Handle = LoadGraph(RISULT_PLAYER_2_WINS);
+	R_Result_Score_Handle = LoadGraph(RISULT_SCORE);
+	R_Result_Player1_WIN_Handle = LoadGraph(RISULT_PLAYER_1_WIN);
+	R_Result_Player2_WIN_Handle = LoadGraph(RISULT_PLAYER_2_WIN);
+	R_Result_Win_Score_Handle = LoadGraph(RISULT_WIN_SCORE);
 
+	// すべての画像パスを配列にまとめる
+	const char* image_paths[RLSULT] = {
+		RISULT_PLAYER_1_WIN,
+		RISULT_PLAYER_2_WIN,
+		RISULT_WIN_SCORE,
+		RISULT_SCORE
+	};
 	R_ResultPoxX = 150;
 
 	R_Continue = false;		//コンテニューフラグを折る
@@ -73,7 +87,8 @@ void Result::StepResult()
 	void Result::DrawResult()
 {
 	DrawString(0, 0, "リザルトシーンです", GetColor(255, 255, 255));
-	DrawGraph(0, 0, R_Result_ScoreHandle, true);
+	DrawGraph(0, 0, R_Result_Score_Handle, true);
+
 }
 
 //タイトル後処理

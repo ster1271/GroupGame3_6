@@ -5,6 +5,10 @@
 
 int T_TitlHandle;
 
+bool T_Continue;	//コンテニューフラグ
+
+bool T_BackTitle;	//タイトルフラグ
+
 //タイトル初期化
 void Title::InitTitle()
 {
