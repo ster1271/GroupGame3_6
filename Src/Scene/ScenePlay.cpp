@@ -53,16 +53,24 @@ void Play::StepPlay()
 void Play::DrawPlay()
 {
 	//背景描画
-	DrawGraph(0, 0, Hndl.BgHndl, true);
+	DrawGraph(0, 0, Hndl.FealdHndl, true);
 
 	//ゲージの計算
-	int a = (GAUGE_HEIGHT / 100) * (100-(int)Gauge);
-	int b = (GAUGE_HEIGHT / 100) * (int)Gauge;
+	int a = 400 - (GAUGE_HEIGHT / 100) * (int)Gauge;	//描画する座標
+	int b = 200 - (GAUGE_HEIGHT / 100) * (int)Gauge;	//矩形の表示座標
+	int c = (GAUGE_HEIGHT / 100) * (int)Gauge;			//矩形
 	//ゲージ(本体)の描画
-	DrawRectGraph(0, a + 200, 0, 0, 200, b, Hndl.GaugeHndl, true, false);
+	DrawRectGraph(0, a, 0, b, 200, c, Hndl.GaugeHndl, true, false);
 
 	//ゲージ(外枠)の描画
 	DrawGraph(0, 200, Hndl.GaugeFlameHndl, true);
+
+	//プレイヤーの描画
+	DrawGraph(300, 350, Hndl.PlayerHndl[0], true);
+
+	//CPUの描画
+	DrawGraph(700, 350, Hndl.CPC_Hndl, true);
+
 
 	DrawString(0, 45, "スペースでゲージを止める", GetColor(0, 0, 255));
 	DrawFormatString(0, 60, GetColor(0, 0, 255), "ゲージの量：%f", Gauge);
@@ -89,6 +97,11 @@ void Play::LoadHundl()
 	Hndl.BgHndl = LoadGraph(BG_HUNDLE_PATH);					//背景画像読み込み
 	Hndl.GaugeHndl = LoadGraph(GAUGE_HUNDLE_PATH);				//ゲージ(本体)画像読み込み	
 	Hndl.GaugeFlameHndl = LoadGraph(GAUGE_FLAMEHUNDLE_PATH);	//ゲージ(外枠)画像読み込み
+	Hndl.FealdHndl = LoadGraph(FEALD_HUNDLE_PATH);				//フィールド画像読み込み
+	Hndl.CPC_Hndl = LoadGraph(CPU_HUNDLE_PATH);					//CPU画像読み込み
+	Hndl.PlayerHndl[0] = LoadGraph(PLAYER_HUNDLE_PATH);			//プレイヤー画像(1P)読み込み
+	Hndl.PlayerHndl[1] = LoadGraph(PLAYER_HUNDLE_PATH);			//プレイヤー画像(2P)読み込み
+
 }
 
 

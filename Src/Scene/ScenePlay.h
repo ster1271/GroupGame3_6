@@ -3,7 +3,12 @@
 
 #define BG_HUNDLE_PATH			"Data/Playimage/karibackground2.png"
 #define GAUGE_FLAMEHUNDLE_PATH	"Data/Playimage/PowerBox.png"			//ゲージ(外枠)画像
-#define GAUGE_HUNDLE_PATH		"Data/Playimage/PowerBox_Shadow.png"	//ゲージ(本体)画像
+#define GAUGE_HUNDLE_PATH		"Data/Playimage/gauge.png"				//ゲージ(本体)画像
+
+#define PLAYER_HUNDLE_PATH		"Data/Playimage/Player_wait1.png"		//プレイヤー画像
+#define CPU_HUNDLE_PATH			"Data/Playimage/CPU_wait1.png"			//CPU画像
+
+#define FEALD_HUNDLE_PATH		"Data/Playimage/background.png"			//フィールド画像
 
 #define GAUGE_HEIGHT		(200)
 
@@ -13,8 +18,9 @@ struct Hundl
 	int BgHndl;			//背景画像ハンドル
 	int GaugeFlameHndl;	//ゲージ(外枠)ハンドル
 	int GaugeHndl;		//ゲージ(本体)ハンドル
-
-	int Player[2];		//
+	int FealdHndl;		//フィールドハンドル
+	int CPC_Hndl;		//CPUハンドル
+	int PlayerHndl[2];	//プレイヤーハンドル
 };
 
 
