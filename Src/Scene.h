@@ -18,5 +18,21 @@ enum SCENE_ID
 	SCENE_ID_FIN_RESULT,	//リザルト後処理
 };
 
+//勝利状態
+enum WIN_STATE
+{
+	EMPTY,			//勝者未確定
+	PLAYER1_WIN,	//プレイヤー1勝利
+	PLAYER2_WIN,	//プレイヤー2勝利
+	CPU_WIN,		//CPU勝利
+	DRAW			//引き分け
+};
+
 //現在のシーンID
 extern  SCENE_ID g_CurrentSceneID;
+
+//勝利状態
+extern WIN_STATE Get_Win;
+
+//瓦を割った数
+extern int TileBreakNum[3];	

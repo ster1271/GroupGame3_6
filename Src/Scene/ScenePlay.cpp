@@ -102,12 +102,13 @@ void Play::DrawPlay()
 
 	case State_SetPoint:
 		DrawString(0, 45, "State == State_SetPoint", GetColor(0, 0, 255));
+		DrawString(0, 60, "スペースで状態遷移", GetColor(0, 0, 255));
 
 		break;
 
 	case State_Break:
 		DrawString(0, 45, "State == State_Break", GetColor(0, 0, 255));
-
+		DrawString(0, 15, "Enterで次のシーンにいく", GetColor(255, 0, 0));
 		break;
 
 	default:
@@ -115,8 +116,6 @@ void Play::DrawPlay()
 	}
 
 	DrawString(0, 0, "プレイシーンです", GetColor(255, 0, 0));
-	DrawString(0, 15, "Enterで次のシーンにいく", GetColor(255, 0, 0));
-
 
 }
 
