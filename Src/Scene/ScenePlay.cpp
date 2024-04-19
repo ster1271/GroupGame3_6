@@ -10,6 +10,7 @@
 void Play::InitPlay()
 {
 	LoadHundl();
+	playState = State_SetPower;
 
 	Gauge = 0.0f;			//ゲージ
 	GaugeUp = 0.2f;			//ゲージ増加量
@@ -27,25 +28,45 @@ void Play::InitPlay()
 //プレイ通常処理
 void Play::StepPlay()
 {
-	
-	//フラグがtrueの時に処理する
-	if (IsGauge == true)
+	//プレイ状態ですることを分ける
+	switch (playState)
 	{
-		//ゲージ増減処理(時間経過で気持ち早くなる)
-		GaugeUpDown();
+	case State_SetPower:
+
+		//フラグがtrueの時に処理する
+		if (IsGauge == true)
+		{
+			//ゲージ増減処理(時間経過で気持ち早くなる)
+			GaugeUpDown();
+			//スペースキーでゲージの増減フラグをおる
+			if (IsKeyPush(KEY_INPUT_SPACE))
+			{
+				IsGauge = false;
+				playState = State_SetPoint;
+			}
+		}
+		break;
+
+	case State_SetPoint:
 		//スペースキーでゲージの増減フラグをおる
 		if (IsKeyPush(KEY_INPUT_SPACE))
 		{
-			IsGauge = false;
+			playState = State_Break;
 		}
-	}
-	
-	//仮のシーン移動
-	//Enterキーを押す
-	if (IsKeyPush(KEY_INPUT_RETURN))
-	{
-		//シーンをプレイ通常処理のシーンへ移動
-		g_CurrentSceneID = SCENE_ID_FIN_PLAY;
+		break;
+
+	case State_Break:
+		//仮のシーン移動
+		//Enterキーを押す
+		if (IsKeyPush(KEY_INPUT_RETURN))
+		{
+			//シーンをプレイ通常処理のシーンへ移動
+			g_CurrentSceneID = SCENE_ID_FIN_PLAY;
+		}
+		break;
+
+	default:
+		break;
 	}
 }
 
@@ -61,7 +82,6 @@ void Play::DrawPlay()
 	int c = (GAUGE_HEIGHT / 100) * (int)Gauge;			//矩形
 	//ゲージ(本体)の描画
 	DrawRectGraph(0, a, 0, b, 200, c, Hndl.GaugeHndl, true, false);
-
 	//ゲージ(外枠)の描画
 	DrawGraph(0, 200, Hndl.GaugeFlameHndl, true);
 
@@ -71,9 +91,28 @@ void Play::DrawPlay()
 	//CPUの描画
 	DrawGraph(700, 350, Hndl.CPC_Hndl, true);
 
+	switch (playState)
+	{
+	case State_SetPower:
+		DrawString(0, 45, "State == State_SetPower", GetColor(0, 0, 255));
+		DrawString(0, 60, "スペースでゲージを止める", GetColor(0, 0, 255));
+		DrawFormatString(0, 75, GetColor(0, 0, 255), "ゲージの量：%f", Gauge);
 
-	DrawString(0, 45, "スペースでゲージを止める", GetColor(0, 0, 255));
-	DrawFormatString(0, 60, GetColor(0, 0, 255), "ゲージの量：%f", Gauge);
+		break;
+
+	case State_SetPoint:
+		DrawString(0, 45, "State == State_SetPoint", GetColor(0, 0, 255));
+
+		break;
+
+	case State_Break:
+		DrawString(0, 45, "State == State_Break", GetColor(0, 0, 255));
+
+		break;
+
+	default:
+		break;
+	}
 
 	DrawString(0, 0, "プレイシーンです", GetColor(255, 0, 0));
 	DrawString(0, 15, "Enterで次のシーンにいく", GetColor(255, 0, 0));

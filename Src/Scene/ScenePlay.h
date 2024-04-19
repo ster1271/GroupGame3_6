@@ -23,12 +23,23 @@ struct Hundl
 	int PlayerHndl[2];	//プレイヤーハンドル
 };
 
+//プレイの状態管理
+enum PlayState
+{
+	State_SetPower = 0,		//パワーを決める状態
+	State_SetPoint,		//瓦を割る位置決定状態
+	State_Break,		//瓦を割る状態
+
+	State_Num			//状態の数
+};
 
 
 class Play
 {
 private:
 	Hundl Hndl;
+
+	PlayState playState;
 
 	int GaugeFlg;		//ゲージのswith文変数
 	float Gauge;		//ゲージ
