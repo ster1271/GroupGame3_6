@@ -35,6 +35,12 @@ void DrawFPS();
 //シーン管理変数
 SCENE_ID g_CurrentSceneID = SCENE_ID_INIT_TITLE;
 
+//勝利状態管理変数
+WIN_STATE Get_Win = EMPTY;
+
+//瓦の割った枚数(出てくる人数分用意してる(player1, player2, cpu))
+int TileBreakNum[3];
+
 // Win32アプリケーションは WinMain関数 から始まる
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
