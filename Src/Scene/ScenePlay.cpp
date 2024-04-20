@@ -9,7 +9,7 @@
 //プレイ初期化
 void Play::InitPlay()
 {
-	memset(&Hndl, 0, sizeof(Hundl));
+	memset(&Hndl, 0, sizeof(HUNDL));
 	LoadHundl();
 	playState = State_SetPower;
 
@@ -30,10 +30,12 @@ void Play::InitPlay()
 
 	/*======2つ目のゲージに関する変数========*/
 	SideGaugePower = 0.0f;
-	SideGaugeVolume = 13.0f;
+	SideGaugeVolume = 11.5f;
 	IsSideGauge = true;
 	PosX = GetRand(115) - 15;
 	PosY = 365;
+	IsRight = false;	//右に動くか
+	IsLeft = false;		//左に動くか
 	i = 0;
 	/*======2つ目のゲージに関する変数========*/
 
@@ -55,6 +57,7 @@ void Play::StepPlay()
 		{
 			//ゲージ増減処理(時間経過で気持ち早くなる)
 			GaugeUpDown();
+
 			//スペースキーでゲージの増減フラグをおる
 			if (IsKeyPush(KEY_INPUT_SPACE))
 			{
@@ -66,7 +69,15 @@ void Play::StepPlay()
 
 	case State_SetPoint:
 		SideGauge();
+		SideGaugeUpDown();
 		
+		//スペースキーで次の状態へ
+		if (IsKeyPush(KEY_INPUT_SPACE))
+		{
+			IsSideGauge == false;
+
+			playState = State_Break;
+		}
 		break;
 
 	case State_Break:
@@ -100,6 +111,8 @@ void Play::DrawPlay()
 	int c = (GAUGE_HEIGHT / 100) * (int)GaugePower;			//矩形
 	switch (playState)
 	{
+
+	//1つ目のゲージ
 	case State_SetPower:
 		DrawString(0, 45, "State == State_SetPower", GetColor(0, 0, 255));
 		DrawString(0, 60, "スペースでゲージを止める", GetColor(0, 0, 255));
@@ -114,15 +127,19 @@ void Play::DrawPlay()
 
 		break;
 
+	//2つ目のゲージ
 	case State_SetPoint:
 		DrawString(0, 45, "State == State_SetPoint", GetColor(0, 0, 255));
 		DrawString(0, 60, "スペースで状態遷移", GetColor(0, 0, 255));
+		DrawFormatString(0, 75, GetColor(0, 0, 255), "サイドゲージの量：%f", SideGaugePower);
 
 		DrawGraph(0, 200, Hndl.SideGaugeHndl, true);		//サイドゲージ(本体)
 		DrawGraph(PosX, PosY, Hndl.SideSelectHndl, true);	//矢印
 		DrawGraph(300, 350, Hndl.PlayerHndl[0][0], true);
 		break;
 
+
+	//瓦を壊す
 	case State_Break:
 		DrawString(0, 45, "State == State_Break", GetColor(0, 0, 255));
 		DrawString(0, 15, "Enterで次のシーンにいく", GetColor(255, 0, 0));
@@ -145,12 +162,37 @@ void Play::DrawPlay()
 
 	DrawString(0, 0, "プレイシーンです", GetColor(255, 0, 0));
 
+	DrawRotaGraph(500, 100, 1.0f, 0.0f, Hndl.JudgeHndl[State_Good], true, false, false);
+	DrawRotaGraph(500, 300, 1.0f, 0.0f,Hndl.JudgeHndl[State_Great], true, false, false);
+	DrawRotaGraph(500, 500, 1.0f, 0.0f, Hndl.JudgeHndl[State_Perfect], true, false, false);
+
 }
 
 //プレイ後処理
 void Play::FinPlay()
 {
 	//画像の削除
+	DeleteGraph(Hndl.BgHndl);
+	DeleteGraph(Hndl.FealdHndl);
+	DeleteGraph(Hndl.GaugeFlameHndl);
+	DeleteGraph(Hndl.GaugeHndl);
+	DeleteGraph(Hndl.SideGaugeHndl);
+	DeleteGraph(Hndl.SideSelectHndl);
+
+	//CPU画像の削除
+	for (int i = 0; i < 3; i++)
+	{
+		DeleteGraph(Hndl.CPC_Hndl[i]);
+	}
+
+	//プレイヤー画像の削除
+	for (int i = 0; i < 2; i++)
+	{
+		for (int a = 0; a < ANIME_MAX_NUM; a++)
+		{
+			DeleteGraph(Hndl.PlayerHndl[i][a]);
+		}
+	}
 
 
 	//リザルトシーンへ移動
@@ -160,17 +202,21 @@ void Play::FinPlay()
 //画像読み込み関数
 void Play::LoadHundl()
 {	
-	Hndl.BgHndl = LoadGraph(BG_HUNDLE_PATH);					//背景画像読み込み
-	Hndl.GaugeHndl = LoadGraph(GAUGE_HUNDLE_PATH);				//ゲージ(本体)画像読み込み	
-	Hndl.GaugeFlameHndl = LoadGraph(GAUGE_FLAMEHUNDLE_PATH);	//ゲージ(外枠)画像読み込み
-	Hndl.SideGaugeHndl = LoadGraph(GAUGE2_HUNDLE_PATH);
-	Hndl.SideSelectHndl = LoadGraph(GAUGE2_1_HUNDLE_PATH);
-	Hndl.FealdHndl = LoadGraph(FEALD_HUNDLE_PATH);				//フィールド画像読み込み
+	Hndl.BgHndl = LoadGraph(BG_HUNDLE_PATH);						//背景画像読み込み
+	Hndl.GaugeHndl = LoadGraph(GAUGE_HUNDLE_PATH);					//ゲージ(本体)画像読み込み	
+	Hndl.GaugeFlameHndl = LoadGraph(GAUGE_FLAMEHUNDLE_PATH);		//ゲージ(外枠)画像読み込み
+	Hndl.SideGaugeHndl = LoadGraph(GAUGE2_HUNDLE_PATH);				//サイドゲージ画像読み込み
+	Hndl.SideSelectHndl = LoadGraph(GAUGE2_1_HUNDLE_PATH);			//サイドゲージ決定画像読み込み
+	Hndl.FealdHndl = LoadGraph(FEALD_HUNDLE_PATH);					//フィールド画像読み込み
+
+	Hndl.JudgeHndl[State_Good] = LoadGraph(GOOD_PATH);				//Good画像読み込み
+	Hndl.JudgeHndl[State_Great] = LoadGraph(GREAT_PAYH);			//Great画像読み込み
+	Hndl.JudgeHndl[State_Perfect] = LoadGraph(PERFECT_PATH);		//Perfect画像読み込み
+
 	Hndl.CPC_Hndl[0] = LoadGraph(CPU_HUNDLE_PATH);					//CPU画像読み込み
 	Hndl.CPC_Hndl[1] = LoadGraph(CPU_HUNDLE_PATH);					//CPU画像読み込み
 	Hndl.CPC_Hndl[2] = LoadGraph(CPU_HUNDLE_PATH);					//CPU画像読み込み
 
-	
 	Hndl.PlayerHndl[0][0] = LoadGraph(PLAYER_WAIT_PATH);			//プレイヤー画像(1P)読み込み
 	Hndl.PlayerHndl[0][1] = LoadGraph(PLAYER_MOVE_PATH);			//プレイヤー画像(1P)読み込み
 	Hndl.PlayerHndl[0][2] = LoadGraph(PLAYER_ATTACK_PATH);			//プレイヤー画像(1P)読み込み
@@ -230,7 +276,7 @@ void Play::GaugeUpDown()
 	}
 }
 
-//サイドゲージ移動と増減関数
+//サイドゲージ移動とゲージポイント変動関数
 void Play::SideGauge()
 {
 	if (IsSideGauge == true)
@@ -238,18 +284,22 @@ void Play::SideGauge()
 		switch (i)
 		{
 		case 0:
-			PosX += SideGaugeVolume;
+			PosX += 13;
 			if (PosX > 275)
 			{
 				i = 1;
+				IsRight = false;
+				IsLeft = true;
 			}
 			break;
 
 		case 1:
-			PosX -= SideGaugeVolume;
+			PosX -= 13;
 			if (PosX < -15)
 			{
 				i = 0;
+				IsLeft = false;
+				IsRight = true;
 			}
 			break;
 
@@ -257,12 +307,30 @@ void Play::SideGauge()
 			break;
 		}
 	}
+}
 
-	//スペースキーで次の状態へ
-	if (IsKeyPush(KEY_INPUT_SPACE))
+//サイドゲージ増減関数
+void Play::SideGaugeUpDown()
+{
+	if (IsSideGauge == true)
 	{
-		IsSideGauge == false;
+		if (IsRight == true && PosX < 150)
+		{
+			SideGaugePower += SideGaugeVolume;
+		}
+		else if (IsRight == true && PosX > 150)
+		{
+			SideGaugePower -= SideGaugeVolume;
+		}
+		else if (IsLeft == true && PosX > 150)
+		{
+			SideGaugePower += SideGaugeVolume;
+		}
+		else if (IsLeft == true && PosX < 150)
+		{
+			SideGaugePower -= SideGaugeVolume;
+		}
 
-		playState = State_Break;
 	}
+	
 }
