@@ -18,7 +18,7 @@ void Play::InitPlay()
 	//ディレイ用変数
 	Dely = 0.0f;
 
-	test = 0;
+	PlayerAnimeNum = 0;
 
 	/*======1つ目のゲージに関する変数========*/
 	GaugePower = 0.0f;		//ゲージ
@@ -31,13 +31,18 @@ void Play::InitPlay()
 	/*======2つ目のゲージに関する変数========*/
 	SideGaugePower = 0.0f;
 	SideGaugeVolume = 11.5f;
-	IsSideGauge = true;
+	IsSideGauge = false;
 	PosX = GetRand(115) - 15;
 	PosY = 365;
 	IsRight = false;	//右に動くか
 	IsLeft = false;		//左に動くか
 	i = 0;
 	/*======2つ目のゲージに関する変数========*/
+
+	/*======瓦を壊す状態========*/
+	IsBreak = false;
+
+	/*======瓦を壊す状態========*/
 
 	//シーンをプレイ通常処理のシーンへ移動
 	g_CurrentSceneID = SCENE_ID_LOOP_PLAY;
@@ -47,6 +52,7 @@ void Play::InitPlay()
 void Play::StepPlay()
 {
 	FlameCount++;
+	Dely += 0.1f;
 	//プレイ状態ですることを分ける
 	switch (playState)
 	{
@@ -62,9 +68,17 @@ void Play::StepPlay()
 			if (IsKeyPush(KEY_INPUT_SPACE))
 			{
 				IsGauge = false;
-				playState = State_SetPoint;
+				Dely = 0.0f;
 			}
 		}
+
+		if (Dely >= 15.0f && IsGauge == false)
+		{
+			//ディレイをかけてから状態遷移
+			IsSideGauge = true;
+			playState = State_SetPoint;
+		}
+
 		break;
 
 	case State_SetPoint:
@@ -74,18 +88,37 @@ void Play::StepPlay()
 		//スペースキーで次の状態へ
 		if (IsKeyPush(KEY_INPUT_SPACE))
 		{
-			IsSideGauge == false;
+			IsSideGauge = false;
+			Dely = 0.0f;
+		}
 
+		if (Dely >= 15.0f && IsSideGauge == false)
+		{
+			//ディレイをかけてから状態遷移
+			IsBreak = true;
 			playState = State_Break;
 		}
 		break;
 
+
 	case State_Break:
 		//仮のシーン移動
-		//Enterキーを押す
-		if (IsKeyPush(KEY_INPUT_RETURN))
+		TileBreakNum[0] = (GaugePower * SideGaugePower) / 100.0f;
+		
+		if (IsBreak == true)
 		{
-			//シーンをプレイ通常処理のシーンへ移動
+			//Enterキーを押す
+			if (IsKeyPush(KEY_INPUT_RETURN))
+			{
+				//シーンをプレイ通常処理のシーンへ移動
+				Dely = 0.0f;
+				IsBreak = false;
+			}
+		}
+
+		if (Dely >= 15.0f && IsBreak == false)
+		{
+			//ディレイをかけてからシーン遷移
 			g_CurrentSceneID = SCENE_ID_FIN_PLAY;
 		}
 		break;
@@ -147,13 +180,13 @@ void Play::DrawPlay()
 		//プレイヤーの描画
 		if (FlameCount % 10 == 0)
 		{
-			test++;
-			if (test > ANIME_MAX_NUM)
+			PlayerAnimeNum++;
+			if (PlayerAnimeNum > ANIME_MAX_NUM)
 			{
-				test = 0;
+				PlayerAnimeNum = 0;
 			}
 		}
-		DrawGraph(300, 350, Hndl.PlayerHndl[0][test], true);
+		DrawGraph(300, 350, Hndl.PlayerHndl[0][PlayerAnimeNum], true);
 		break;
 
 	default:
@@ -194,6 +227,11 @@ void Play::FinPlay()
 		}
 	}
 
+	for (int i = 0; i < TILE_MAX_NUM; i++)
+	{
+		DeleteGraph(Hndl.TileHndl[i]);				//瓦の画像(割れる前)読み込み
+		DeleteGraph(Hndl.TileBreakHndl[i]);			//瓦の画像(割れた後)読み込み
+	}
 
 	//リザルトシーンへ移動
 	g_CurrentSceneID = SCENE_ID_INIT_RESULT;
@@ -224,15 +262,17 @@ void Play::LoadHundl()
 	Hndl.PlayerHndl[1][1] = LoadGraph(PLAYER_WAIT_PATH);			//プレイヤー画像(2P)読み込み
 	Hndl.PlayerHndl[1][2] = LoadGraph(PLAYER_WAIT_PATH);			//プレイヤー画像(2P)読み込み
 
-
+	for (int i = 0; i < TILE_MAX_NUM; i++)
+	{
+		Hndl.TileHndl[i] = LoadGraph(TILE_HUNDLE_PATH);				//瓦の画像(割れる前)読み込み
+		Hndl.TileBreakHndl[i] = LoadGraph(TILE_BREAK_HUNDLE_PATH);	//瓦の画像(割れた後)読み込み
+	}
 }
 
 
 //ゲージ増減関数
 void Play::GaugeUpDown()
 {
-	//5フレームごとに増減量を変える
-	
 	if (SwitchGauge == 0)
 	{
 		GaugeVolume += 0.15f;
@@ -248,7 +288,7 @@ void Play::GaugeUpDown()
 		GaugeVolume = 0.2f;
 	}
 
-	//ゲージの増減(仮置き)
+	//ゲージの増減(完成)
 	switch (SwitchGauge)
 	{
 	case 0:
@@ -276,7 +316,7 @@ void Play::GaugeUpDown()
 	}
 }
 
-//サイドゲージ移動とゲージポイント変動関数
+//サイドゲージ移動関数
 void Play::SideGauge()
 {
 	if (IsSideGauge == true)
@@ -309,7 +349,7 @@ void Play::SideGauge()
 	}
 }
 
-//サイドゲージ増減関数
+//サイドゲージパワー増減関数
 void Play::SideGaugeUpDown()
 {
 	if (IsSideGauge == true)
@@ -330,7 +370,5 @@ void Play::SideGaugeUpDown()
 		{
 			SideGaugePower -= SideGaugeVolume;
 		}
-
 	}
-	
 }

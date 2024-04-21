@@ -23,6 +23,11 @@
 #define CPU_MOVE_PATH			"Data/Playimage/CPU_wait1.png"			//CPU画像(モーション)
 #define CPU_ATTACK_PATH			"Data/Playimage/CPU_wait1.png"			//CPU画像(攻撃)
 
+
+#define TILE_HUNDLE_PATH		"Data/Playimage/kawara.png"				//タイルの画像(割れる前)
+#define TILE_BREAK_HUNDLE_PATH	"Data/Playimage/broken_kawara.png"		//タイルの画像(割れた後)
+#define TILE_MAX_NUM		(100)										//瓦の最大数
+
 #define GOOD_PATH				"Data/Playimage/Good.png"				//Good画像
 #define GREAT_PAYH				"Data/Playimage/Greatpng.png"			//Great画像
 #define PERFECT_PATH			"Data/Playimage/Perfect.png"			//Perfect画像
@@ -60,6 +65,8 @@ struct HUNDL
 	int SideSelectHndl;					//矢印画像ハンドル	
 	int JudgeHndl[Stete_Judge_Num];		//判定画像ハンドル
 
+	int TileHndl[TILE_MAX_NUM];			//瓦(割れる前)の画像ハンドル
+	int TileBreakHndl[TILE_MAX_NUM];	//瓦(割れた後)の画像ハンドル
 	int CPC_Hndl[ANIME_MAX_NUM];		//CPU画像ハンドル
 	int PlayerHndl[2][ANIME_MAX_NUM];	//プレイヤー画像ハンドル
 
@@ -74,7 +81,6 @@ private:
 
 	int FlameCount;			//フレームカウント
 	float Dely;				//ディレイ用変数
-	float Power;			//瓦を割る力
 
 
 	/*======1つ目のゲージに関する変数========*/
@@ -94,10 +100,13 @@ private:
 	int i;					//サイドゲージのswith分変数
 	/*======2つ目のゲージに関する変数========*/
 
+	/*======瓦を壊す状態========*/
+	bool IsBreak;
+
+	/*======瓦を壊す状態========*/
 
 
-
-	int test;
+	int PlayerAnimeNum;
 
 public:
 	//プレイ初期化
