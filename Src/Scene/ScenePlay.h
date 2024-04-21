@@ -1,7 +1,7 @@
 #pragma once
 
 
-#define BG_HUNDLE_PATH			"Data/Playimage/karibackground2.png"	//背景画像
+#define BG_HUNDLE_PATH			"Data/Playimage/background2.png"		//背景画像
 #define FEALD_HUNDLE_PATH		"Data/Playimage/background.png"			//フィールド画像
 
 
@@ -13,15 +13,17 @@
 #define GAUGE2_1_HUNDLE_PATH	"Data/Playimage/Chargebox_arrow.png"	//矢印画像
 #define SIDEGAUGE_WIDHT		(300)										//サイドゲージの横幅
 
-#define ANIME_MAX_NUM		(3)											//アニメ枚数
+#define ANIME_MAX_NUM		(4)											//アニメ枚数
 #define PLAYER_WAIT_PATH		"Data/Playimage/Player_wait1.png"		//プレイヤー画像(待機)
-#define PLAYER_MOVE_PATH		"Data/Playimage/player_move.png"		//プレイヤー画像(モーション)
+#define PLAYER_MOVE_PATH		"Data/Playimage/player_move.png"		//プレイヤー画像(モーション1)
+#define PLAYER_MOVE_PATH2		"Data/Playimage/Player_move2.png"		//プレイヤー画像(モーション2)
 #define PLAYER_ATTACK_PATH		"Data/Playimage/Player_attack.png"		//プレイヤー画像(攻撃)
 
 
 #define CPU_HUNDLE_PATH			"Data/Playimage/CPU_wait1.png"			//CPU画像(待機)
-#define CPU_MOVE_PATH			"Data/Playimage/CPU_wait1.png"			//CPU画像(モーション)
-#define CPU_ATTACK_PATH			"Data/Playimage/CPU_wait1.png"			//CPU画像(攻撃)
+#define CPU_MOVE_PATH			"Data/Playimage/CPU_move.png"			//CPU画像(モーション1)
+#define CPU_MOVE_PATH2			"Data/Playimage/CPU_move2.png"			//CPU画像(モーション2)
+#define CPU_ATTACK_PATH			"Data/Playimage/CPU_attack.png"			//CPU画像(攻撃)
 
 
 #define TILE_HUNDLE_PATH		"Data/Playimage/kawara.png"				//タイルの画像(割れる前)
@@ -102,7 +104,7 @@ private:
 
 	/*======瓦を壊す状態========*/
 	bool IsBreak;
-
+	bool IsAnimeFinish;
 	/*======瓦を壊す状態========*/
 
 
@@ -132,4 +134,7 @@ public:
 
 	//サイドゲージ移動関数
 	void SideGauge();
+
+	//アニメーション管理
+	void Anime();
 };
