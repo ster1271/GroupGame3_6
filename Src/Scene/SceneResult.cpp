@@ -62,6 +62,7 @@ void Result::StepResult()
 			R_Wins_Score = true;	//コンテニューフラグを立て
 			if (R_Wins_Score) {
 				//リザルト後処理シーンへ移動
+				DeleteGraph(images[WIN_RLSULT]);	//クリア背景画像破棄
 				R_Result_Selectino_Handle[0] = R_Result_Selectino_Handle[1] ;
 			}
 		}
@@ -105,16 +106,18 @@ void Result::StepResult()
 //タイトル描画処理
 	void Result::DrawResult()
 {
+
 	DrawGraph(0, 0, R_Result_Selectino_Handle[0], true);
-	DrawGraph(0, 0, R_Result_Score_Handle, true);
+	DrawGraph(0, 0, images[WIN_RLSULT], true);
 	DrawString(0, 0, "リザルトシーンです", GetColor(255, 255, 255));
 	
+
 }
 
 //タイトル後処理
 void Result::FinResult()
 {
-
+	DeleteGraph(R_Result_Selectino_Handle[2]);	//クリア背景画像破棄
 	if (R_Continue)	//コンテニューフラグがtrueなら
 	{
 		g_CurrentSceneID = SCENE_ID_INIT_PLAY;	//プレイシーンに戻る
