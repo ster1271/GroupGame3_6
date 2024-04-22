@@ -10,6 +10,7 @@ enum SCENE_ID
 	//プレイシーンのID
 	SCENE_ID_INIT_PLAY,		//プレイ初期化
 	SCENE_ID_LOOP_PLAY,		//プレイ繰り返し
+	SCENE_ID_TILEDROW,		//タイル描画(シーン移動させたいだけ)
 	SCENE_ID_FIN_PLAY,		//プレイ後処理
 
 	//リザルトシーンのID

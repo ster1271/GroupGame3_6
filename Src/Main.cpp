@@ -153,8 +153,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					//プレイ描画処理
 					play.DrawPlay();
 
-				}//SCENE_ID_LOOP_RESULT終わりの括弧
+				}//SCENE_ID_LOOP_PLAY終わりの括弧
 				break;
+
+				case SCENE_ID_TILEDROW:
+				{
+
+				}
+				break;
+
 				case SCENE_ID_FIN_PLAY:
 				{
 					//プレイ後処理

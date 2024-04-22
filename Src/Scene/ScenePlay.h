@@ -97,6 +97,7 @@ private:
 	float SideGaugeVolume;	//サイドゲージの増加量
 	bool IsSideGauge;		//サイドゲージ実行中フラグ
 	int PosX, PosY;			//動くゲージの座標格納変数
+	int InitPosX;			//初期X座標
 	bool IsRight;			//右に動くか
 	bool IsLeft;			//左に動くか
 	int i;					//サイドゲージのswith分変数
@@ -105,6 +106,10 @@ private:
 	/*======瓦を壊す状態========*/
 	bool IsBreak;
 	bool IsAnimeFinish;
+	int tileNum;
+	bool IsTileDraw[TILE_MAX_NUM];
+	int num;
+	float TilePosY;
 	/*======瓦を壊す状態========*/
 
 
@@ -130,11 +135,17 @@ public:
 	void GaugeUpDown();
 
 	//サイドゲージ増減関数
-	void SideGaugeUpDown();
+	void SetSideGauge();
 
 	//サイドゲージ移動関数
 	void SideGauge();
 
 	//アニメーション管理
 	void Anime();
+
+	//瓦の描画処理
+	void TileDraw();
+
+	//自動スクロール
+	void Auto();
 };

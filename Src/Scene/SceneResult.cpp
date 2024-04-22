@@ -56,7 +56,18 @@ void Result::InitResult()
 //タイトル通常処理
 void Result::StepResult()
 {
-	
+	if (IsKeyPush(KEY_INPUT_SPACE))	//エンターキーを押すと
+	{
+		{
+			R_Wins_Score = true;	//コンテニューフラグを立て
+			if (R_Wins_Score) {
+				//リザルト後処理シーンへ移動
+				DeleteGraph(currentImageIndex);	//クリア背景画像破棄
+				R_Result_Selectino_Handle[0] = R_Result_Selectino_Handle[1] ;
+			}
+		}
+
+}
 		if (IsKeyPush(KEY_INPUT_A) || IsKeyPush(KEY_INPUT_LEFT))	//Aキーまたは左矢印キーが押されたら
 		{
 			if (R_ResultPoxX == 650)
@@ -93,18 +104,20 @@ void Result::StepResult()
 }
 
 //タイトル描画処理
-	void Result::DrawResult()
+void Result::DrawResult()
 {
+
 	DrawGraph(0, 0, R_Result_Selectino_Handle[0], true);
-	DrawGraph(0, 0, R_Result_Score_Handle, true);
+	DrawGraph(0, 0, images[currentImageIndex], true);
 	DrawString(0, 0, "リザルトシーンです", GetColor(255, 255, 255));
 	
+
 }
 
 //タイトル後処理
 void Result::FinResult()
 {
-
+	DeleteGraph(R_Result_Selectino_Handle[1]);	//クリア背景画像破棄
 	if (R_Continue)	//コンテニューフラグがtrueなら
 	{
 		g_CurrentSceneID = SCENE_ID_INIT_PLAY;	//プレイシーンに戻る
