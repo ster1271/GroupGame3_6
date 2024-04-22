@@ -1,6 +1,8 @@
 #pragma once
 
-#define T_TITLE_PATH "Data/Titleimage/Title.png"
+#define T_TITLE_PATH1 "Data/Titleimage/title3_1.png"
+#define T_TITLE_PATH2 "Data/Titleimage/title3_2.png"
+#define T_HAND_PATH "Data/Titleimage/chop.png"
 #define T_TITLE_NAME_PATH  "Data/Titleimage/Titletext.png"
 class Title
 {
