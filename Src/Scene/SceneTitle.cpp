@@ -5,6 +5,8 @@
 
 int T_TitlHandle;
 
+int T_TktlNameHandle;
+
 bool T_Continue;	//コンテニューフラグ
 
 bool T_BackTitle;	//タイトルフラグ
@@ -13,7 +15,9 @@ bool T_BackTitle;	//タイトルフラグ
 void Title::InitTitle()
 {
 	//タイトル画像読み込み
-	T_TitlHandle = LoadGraph(T_TITLE_NAME_PATH);
+	T_TitlHandle = LoadGraph(T_TITLE_PATH);
+
+	T_TktlNameHandle = LoadGraph(T_TITLE_NAME_PATH);
 	//タイトルループシーンへ移動
 	g_CurrentSceneID = SCENE_ID_LOOP_TITLE;
 }
@@ -34,6 +38,7 @@ void Title::StepTitle()
 void Title::DrawTitle()
 {
 	DrawGraph(0, 0, T_TitlHandle, true);
+	DrawGraph(100, 0, T_TktlNameHandle, true);
 	DrawString(0,0, "タイトルシーンです", GetColor(255, 255, 255));
 }
 

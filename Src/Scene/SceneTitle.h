@@ -1,7 +1,7 @@
 #pragma once
 
-#define T_TITLE_NAME_PATH "Data/Titleimage/kari_title.png"
-
+#define T_TITLE_PATH "Data/Titleimage/Title.png"
+#define T_TITLE_NAME_PATH  "Data/Titleimage/Titletext.png"
 class Title
 {
 private:
