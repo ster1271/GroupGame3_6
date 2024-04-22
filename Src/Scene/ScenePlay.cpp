@@ -42,6 +42,7 @@ void Play::InitPlay()
 	/*======瓦を壊す状態========*/
 	IsBreak = false;
 	IsAnimeFinish = false;
+	tileNum = 0;
 	/*======瓦を壊す状態========*/
 
 	//シーンをプレイ通常処理のシーンへ移動
@@ -103,7 +104,7 @@ void Play::StepPlay()
 
 	case State_Break:
 		//仮のシーン移動
-		TileBreakNum[0] = 5/*(GaugePower * SideGaugePower) / 100.0f*/;
+		TileBreakNum[0] = 10/*(GaugePower * SideGaugePower) / 100.0f*/;
 		
 
 		//自動スクロールをする
@@ -189,15 +190,7 @@ void Play::DrawPlay()
 		//アニメーションが終わったら
 		if (IsAnimeFinish == true)
 		{
-			//瓦の描画
-			for (int i = 0; i < TileBreakNum[0]; i++)
-			{
-				DrawGraph(0, i * 50, Hndl.TileBreakHndl[i], true);	//壊れた瓦
-			}
-			for (int i = TileBreakNum[0] + 1; i < TILE_MAX_NUM; i++)
-			{
-				DrawGraph(0, i * 50, Hndl.TileHndl[i], true);		//壊れてない瓦
-			}
+			TileDraw();		//瓦の描画
 		}
 
 		break;
@@ -402,6 +395,23 @@ void Play::Anime()
 		else
 		{
 			PlayerAnimeNum++;
+		}
+	}
+}
+
+//瓦の描画処理
+void Play::TileDraw()
+{
+	//瓦の描画
+	for (int i = 0; i < TILE_MAX_NUM; i++)
+	{
+		if (i < TileBreakNum[0])
+		{
+			DrawGraph(0, i * 50, Hndl.TileBreakHndl[i], true);	//壊れた瓦	
+		}
+		else
+		{
+			DrawGraph(0, i * 55, Hndl.TileHndl[i], true);		//壊れてない瓦
 		}
 	}
 }

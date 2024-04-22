@@ -105,6 +105,7 @@ private:
 	/*======瓦を壊す状態========*/
 	bool IsBreak;
 	bool IsAnimeFinish;
+	int tileNum;
 	/*======瓦を壊す状態========*/
 
 
@@ -137,4 +138,7 @@ public:
 
 	//アニメーション管理
 	void Anime();
+
+	//瓦の描画処理
+	void TileDraw();
 };
