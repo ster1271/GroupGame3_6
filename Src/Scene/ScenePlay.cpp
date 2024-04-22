@@ -18,6 +18,16 @@ void Play::InitPlay()
 	//ディレイ用変数
 	Dely = 0.0f;
 
+	int Random = GetRand(5);
+	if (Random == 1)
+	{
+		IsPlayer = false;
+	}
+	else
+	{
+		IsPlayer = true;
+	}
+
 	PlayerAnimeNum = 0;
 
 	/*======1つ目のゲージに関する変数========*/
@@ -47,7 +57,8 @@ void Play::InitPlay()
 		IsTileDraw[i] = false;
 	}
 	num = 0;
-	TilePosY = 570;
+	TilePosY = 510;
+	IsFinish = false;
 	/*======瓦を壊す状態========*/
 
 	//シーンをプレイ通常処理のシーンへ移動
@@ -115,9 +126,8 @@ void Play::StepPlay()
 		{
 			GaugePower = 100.0f;
 		}
-		TileBreakNum[0] = (GaugePower * SideGaugePower) / 100.0f;
-		TileBreakNum[1] = (GaugePower * SideGaugePower) / 100.0f;
-		TileBreakNum[2] = (GaugePower * SideGaugePower) / 100.0f;
+		PlayerBreakTile = (GaugePower * SideGaugePower) / 100.0f;
+		
 
 		//自動スクロールをする
 
@@ -174,11 +184,18 @@ void Play::DrawPlay()
 		DrawRectGraph(0, a, 0, b, 200, c, Hndl.GaugeHndl, true, false);
 		//ゲージ(外枠)の描画
 		DrawGraph(0, 200, Hndl.GaugeFlameHndl, true);
-		DrawGraph(300, 350, Hndl.PlayerHndl[0][0], true);		//プレイヤーの描画(待機)
-		DrawGraph(700, 350, Hndl.CPC_Hndl[0], true);			//CPUの描画
+		if (IsPlayer == true)
+		{
+			DrawGraph(510, 350, Hndl.PlayerHndl[0], true);		//プレイヤーの描画(待機)
+		}
+		else
+		{
+			DrawGraph(510, 350, Hndl.CPC_Hndl[0], true);		//CPUの描画(待機)
+		}
+
 		for (int i = 0; i < TILE_MAX_NUM; i++)
 		{
-			DrawGraph(300, 570 + i * 55, Hndl.TileHndl[i], true);		//タイルの描画(割れてない)
+			DrawGraph(510, 570 + i * 55, Hndl.TileHndl[i], true);		//タイルの描画(割れてない)
 		}
 
 		break;
@@ -193,12 +210,18 @@ void Play::DrawPlay()
 
 		DrawGraph(20, 200, Hndl.SideGaugeHndl, true);		//サイドゲージ(本体)
 		DrawGraph(PosX, PosY, Hndl.SideSelectHndl, true);	//矢印
-		DrawGraph(300, 350, Hndl.PlayerHndl[0][0], true);	//プレイヤーの描画(待機)
-		DrawGraph(700, 350, Hndl.CPC_Hndl[0], true);		//CPUの描画(待機)
+		if (IsPlayer == true)
+		{
+			DrawGraph(510, 350, Hndl.PlayerHndl[0], true);		//プレイヤーの描画(待機)
+		}
+		else
+		{
+			DrawGraph(510, 350, Hndl.CPC_Hndl[0], true);		//CPUの描画(待機)
+		}
 
 		for (int i = 0; i < TILE_MAX_NUM; i++)
 		{
-			DrawGraph(300, 570 + i * 55, Hndl.TileHndl[i], true);		//タイルの描画(割れてない)
+			DrawGraph(510, 570 + i * 55, Hndl.TileHndl[i], true);		//タイルの描画(割れてない)
 		}
 		break;
 
@@ -208,33 +231,32 @@ void Play::DrawPlay()
 
 		//デバック用
 		DrawString(0, 45, "State == State_Break", GetColor(0, 0, 255));
-		DrawFormatString(0, 30, GetColor(0, 0, 255), "壊れる瓦の数：%d", TileBreakNum[0]);
+		DrawFormatString(0, 30, GetColor(0, 0, 255), "壊れる瓦の数：%d", PlayerBreakTile);
 		DrawString(0, 15, "Enterで次のシーンにいく", GetColor(255, 0, 0));
 		//デバック用
 
 
 		Anime();
-		DrawGraph(300, 350, Hndl.PlayerHndl[0][PlayerAnimeNum], true);		//プレイヤーの描画(アニメーション)
-		DrawGraph(700, 350, Hndl.CPC_Hndl[PlayerAnimeNum], true);			//CPUの描画(アニメーション)
+		if (IsPlayer == true)
+		{
+			DrawGraph(510, 350, Hndl.PlayerHndl[PlayerAnimeNum], true);		//プレイヤーの描画(アニメーション)
+		}
+		else
+		{
+			DrawGraph(510, 350, Hndl.CPC_Hndl[PlayerAnimeNum], true);		//CPUの描画(アニメーション)
+		}
 
 		//アニメーションが終わったら
 		if (IsAnimeFinish == true)
 		{
-			if (FlameCount % 60 == 0)
-			{
-				if (num < TileBreakNum[0])
-				{
-					IsTileDraw[num] = true;
-					num++;
-				}
-			}
-			TileDraw();		//瓦の描画
+			Dely = 0.0f;
+			g_CurrentSceneID = SCENE_ID_TILEDROW;
 		}
 		else
 		{
 			for (int i = 0; i < TILE_MAX_NUM; i++)
 			{
-				DrawGraph(300, 570 + i * 55, Hndl.TileHndl[i], true);		//タイルの描画(割れてない)
+				DrawGraph(510, 570 + i * 55, Hndl.TileHndl[i], true);		//タイルの描画(割れてない)
 			}
 		}
 
@@ -245,11 +267,6 @@ void Play::DrawPlay()
 	}
 
 	DrawString(0, 0, "プレイシーンです", GetColor(255, 0, 0));
-
-	DrawRotaGraph(500, 100, 1.0f, 0.0f, Hndl.JudgeHndl[State_Good], true, false, false);
-	DrawRotaGraph(500, 300, 1.0f, 0.0f,Hndl.JudgeHndl[State_Great], true, false, false);
-	DrawRotaGraph(500, 500, 1.0f, 0.0f, Hndl.JudgeHndl[State_Perfect], true, false, false);
-
 }
 
 //プレイ後処理
@@ -272,10 +289,7 @@ void Play::FinPlay()
 	//プレイヤー画像の削除
 	for (int i = 0; i < 2; i++)
 	{
-		for (int a = 0; a < ANIME_MAX_NUM; a++)
-		{
-			DeleteGraph(Hndl.PlayerHndl[i][a]);
-		}
+		DeleteGraph(Hndl.PlayerHndl[i]);
 	}
 
 	for (int i = 0; i < TILE_MAX_NUM; i++)
@@ -292,6 +306,7 @@ void Play::FinPlay()
 void Play::LoadHundl()
 {	
 	Hndl.BgHndl = LoadGraph(BG_HUNDLE_PATH);						//背景画像読み込み
+	Hndl.Bg1Hndl = LoadGraph(BG_HUNDLE1_PATH);
 	Hndl.GaugeHndl = LoadGraph(GAUGE_HUNDLE_PATH);					//ゲージ(本体)画像読み込み	
 	Hndl.GaugeFlameHndl = LoadGraph(GAUGE_FLAMEHUNDLE_PATH);		//ゲージ(外枠)画像読み込み
 	Hndl.SideGaugeHndl = LoadGraph(GAUGE2_HUNDLE_PATH);				//サイドゲージ画像読み込み
@@ -307,14 +322,10 @@ void Play::LoadHundl()
 	Hndl.CPC_Hndl[2] = LoadGraph(CPU_MOVE_PATH2);					//CPU画像読み込み
 	Hndl.CPC_Hndl[3] = LoadGraph(CPU_ATTACK_PATH);					//CPU画像読み込み
 
-	Hndl.PlayerHndl[0][0] = LoadGraph(PLAYER_WAIT_PATH);			//プレイヤー画像(1P)読み込み
-	Hndl.PlayerHndl[0][1] = LoadGraph(PLAYER_MOVE_PATH);			//プレイヤー画像(1P)読み込み
-	Hndl.PlayerHndl[0][2] = LoadGraph(PLAYER_MOVE_PATH2);			//プレイヤー画像(1P)読み込み
-	Hndl.PlayerHndl[0][3] = LoadGraph(PLAYER_ATTACK_PATH);			//プレイヤー画像(1P)読み込み
-	Hndl.PlayerHndl[1][0] = LoadGraph(PLAYER_WAIT_PATH);			//プレイヤー画像(2P)読み込み
-	Hndl.PlayerHndl[1][1] = LoadGraph(PLAYER_WAIT_PATH);			//プレイヤー画像(2P)読み込み
-	Hndl.PlayerHndl[1][2] = LoadGraph(PLAYER_WAIT_PATH);			//プレイヤー画像(2P)読み込み
-	Hndl.PlayerHndl[1][3] = LoadGraph(PLAYER_WAIT_PATH);			//プレイヤー画像(2P)読み込み
+	Hndl.PlayerHndl[0] = LoadGraph(PLAYER_WAIT_PATH);			//プレイヤー画像(1P)読み込み
+	Hndl.PlayerHndl[1] = LoadGraph(PLAYER_MOVE_PATH);			//プレイヤー画像(1P)読み込み
+	Hndl.PlayerHndl[2] = LoadGraph(PLAYER_MOVE_PATH2);			//プレイヤー画像(1P)読み込み
+	Hndl.PlayerHndl[3] = LoadGraph(PLAYER_ATTACK_PATH);			//プレイヤー画像(1P)読み込み
 
 	for (int i = 0; i < TILE_MAX_NUM; i++)
 	{
@@ -409,11 +420,11 @@ void Play::SetSideGauge()
 	{
 		SideGaugePower = 100;
 	}
-	else if (vol > 5 && vol <= 30)
+	else if (vol > 5 && vol <= 20)
 	{
 		SideGaugePower = 80;
 	}
-	else if (vol > 30 && vol <= 55)
+	else if (vol > 20 && vol <= 55)
 	{
 		SideGaugePower = 60;
 	}
@@ -430,7 +441,7 @@ void Play::SetSideGauge()
 //アニメーション管理
 void Play::Anime()
 {
-	if (FlameCount % 10 == 0)
+	if (FlameCount % 5 == 0)
 	{
 		if (PlayerAnimeNum == ANIME_MAX_NUM - 1)
 		{
@@ -447,16 +458,52 @@ void Play::Anime()
 //瓦の描画処理
 void Play::TileDraw()
 {
-	TilePosY -= 0.8f;
+	TilePosY -= 3.0f;
 	for (int i = 0; i < TILE_MAX_NUM; i++)
 	{
 		if (IsTileDraw[i] == true)
 		{
-			DrawGraph(300, TilePosY + (float)(i * 50), Hndl.TileBreakHndl[i], true);	//壊れた瓦
+			DrawGraph(510, TilePosY + (float)(i * 50), Hndl.TileBreakHndl[i], true);	//壊れた瓦
+
+			if (TilePosY + (float)(PlayerBreakTile * 50) < -10.0f)
+			{
+				IsFinish = true;
+			}
 		}
 		else
 		{
-			DrawGraph(300, TilePosY + (float)(i * 55), Hndl.TileHndl[i], true);			//壊れてない瓦
+			DrawGraph(510, TilePosY + (float)(i * 50) + 10, Hndl.TileHndl[i], true);	//壊れてない瓦
+		}
+		
+	}
+}
+
+//自動スクロール
+void Play::Auto()
+{
+	DrawGraph(0, 0, Hndl.Bg1Hndl, true);
+
+	if (IsFinish == false)
+	{
+		FlameCount++;
+		if (FlameCount % 18 == 0)
+		{
+			if (num < PlayerBreakTile)
+			{
+				IsTileDraw[num] = true;
+				num++;
+			}
 		}
 	}
+	
+	TileDraw();
+	
+	if (IsFinish == true)
+	{
+		Dely += 0.1f;
+		if (Dely >= 8.0f)
+		{
+			g_CurrentSceneID = SCENE_ID_FIN_PLAY;
+		}
+	}	
 }

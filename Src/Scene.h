@@ -36,4 +36,4 @@ extern  SCENE_ID g_CurrentSceneID;
 extern WIN_STATE Get_Win;
 
 //Š¢‚ğŠ„‚Á‚½”
-extern int TileBreakNum[3];	
+extern int PlayerBreakTile;	

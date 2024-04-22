@@ -2,6 +2,7 @@
 
 
 #define BG_HUNDLE_PATH			"Data/Playimage/background2.png"		//背景画像
+#define BG_HUNDLE1_PATH			"Data/Playimage/background_sky.png"
 #define FEALD_HUNDLE_PATH		"Data/Playimage/background.png"			//フィールド画像
 
 
@@ -60,6 +61,7 @@ enum GAUGESTATE
 struct HUNDL
 {
 	int BgHndl;							//背景画像ハンドル
+	int Bg1Hndl;						
 	int FealdHndl;						//フィールド1画像ハンドル
 	int GaugeFlameHndl;					//ゲージ(外枠)画像ハンドル
 	int GaugeHndl;						//ゲージ(本体)画像ハンドル
@@ -70,7 +72,7 @@ struct HUNDL
 	int TileHndl[TILE_MAX_NUM];			//瓦(割れる前)の画像ハンドル
 	int TileBreakHndl[TILE_MAX_NUM];	//瓦(割れた後)の画像ハンドル
 	int CPC_Hndl[ANIME_MAX_NUM];		//CPU画像ハンドル
-	int PlayerHndl[2][ANIME_MAX_NUM];	//プレイヤー画像ハンドル
+	int PlayerHndl[ANIME_MAX_NUM];	//プレイヤー画像ハンドル
 
 };
 
@@ -83,7 +85,7 @@ private:
 
 	int FlameCount;			//フレームカウント
 	float Dely;				//ディレイ用変数
-
+	bool IsPlayer;
 
 	/*======1つ目のゲージに関する変数========*/
 	int SwitchGauge;		//ゲージのswith文変数
@@ -110,6 +112,7 @@ private:
 	bool IsTileDraw[TILE_MAX_NUM];
 	int num;
 	float TilePosY;
+	bool IsFinish;
 	/*======瓦を壊す状態========*/
 
 

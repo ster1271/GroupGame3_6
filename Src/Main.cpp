@@ -39,7 +39,7 @@ SCENE_ID g_CurrentSceneID = SCENE_ID_INIT_TITLE;
 WIN_STATE Get_Win = EMPTY;
 
 //瓦の割った枚数(出てくる人数分用意してる(player1, player2, cpu))
-int TileBreakNum[3];
+int PlayerBreakTile;
 
 // Win32アプリケーションは WinMain関数 から始まる
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -158,7 +158,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 				case SCENE_ID_TILEDROW:
 				{
-
+					play.Auto();
 				}
 				break;
 
