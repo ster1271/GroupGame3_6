@@ -56,7 +56,17 @@ void Result::InitResult()
 //タイトル通常処理
 void Result::StepResult()
 {
-	
+	if (IsKeyPush(KEY_INPUT_SPACE))	//エンターキーを押すと
+	{
+		{
+			R_Wins_Score = true;	//コンテニューフラグを立て
+			if (R_Wins_Score) {
+				//リザルト後処理シーンへ移動
+				R_Result_Selectino_Handle[0] = R_Result_Selectino_Handle[1] ;
+			}
+		}
+
+}
 		if (IsKeyPush(KEY_INPUT_A) || IsKeyPush(KEY_INPUT_LEFT))	//Aキーまたは左矢印キーが押されたら
 		{
 			if (R_ResultPoxX == 650)
