@@ -11,6 +11,7 @@ int R_Result_Right_Handle;
 int R_Result_Left_Handle;
 int R_Result_Frame_Handle;
 
+int NumberFontHndle[10];
 
 int R_ResultPoxX; //座標
 
@@ -34,6 +35,10 @@ void Result::InitResult()
 	R_Result_Right_Handle = LoadGraph(RISULT_RIGHT);;
     R_Result_Left_Handle = LoadGraph(RISULT_LEFT);;
 	R_Result_Frame_Handle = LoadGraph(RISULT_FRAME);;
+
+	NumberFontHndle[10] = { 0 };
+
+	LoadDivGraph("Data/ClearImage/number.png", 10, 10, 1, 200, 200, NumberFontHndle);
 	
 	const char* image_paths[WIN_RLSULT] = {
 		RISULT_PLAYER_1_WIN,
@@ -107,10 +112,14 @@ void Result::StepResult()
 void Result::DrawResult()
 {
 
+
+
 	DrawGraph(0, 0, R_Result_Selectino_Handle[0], true);
 	DrawGraph(0, 0, images[currentImageIndex], true);
 	DrawString(0, 0, "リザルトシーンです", GetColor(255, 255, 255));
 	
+
+
 
 }
 
