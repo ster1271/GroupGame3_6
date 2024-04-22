@@ -30,12 +30,11 @@ void Play::InitPlay()
 
 	/*======2つ目のゲージに関する変数========*/
 	SideGaugePower = 0.0f;
-	SideGaugeVolume = 11.5f;
+	SideGaugeVolume = 12.0f;
 	IsSideGauge = false;
-	PosX = GetRand(115) - 15;
+	PosX = 20;
 	PosY = 365;
-	IsRight = false;	//右に動くか
-	IsLeft = false;		//左に動くか
+	InitPosX = PosX;
 	i = 0;
 	/*======2つ目のゲージに関する変数========*/
 
@@ -43,6 +42,12 @@ void Play::InitPlay()
 	IsBreak = false;
 	IsAnimeFinish = false;
 	tileNum = 0;
+	for (int i = 0; i < TILE_MAX_NUM; i++)
+	{
+		IsTileDraw[i] = false;
+	}
+	num = 0;
+	TilePosY = 570;
 	/*======瓦を壊す状態========*/
 
 	//シーンをプレイ通常処理のシーンへ移動
@@ -53,6 +58,8 @@ void Play::InitPlay()
 void Play::StepPlay()
 {
 	FlameCount++;
+	
+
 	Dely += 0.1f;
 	//プレイ状態ですることを分ける
 	switch (playState)
@@ -84,11 +91,11 @@ void Play::StepPlay()
 
 	case State_SetPoint:
 		SideGauge();
-		SideGaugeUpDown();
 		
 		//スペースキーで次の状態へ
 		if (IsKeyPush(KEY_INPUT_SPACE))
 		{
+			SetSideGauge();
 			IsSideGauge = false;
 			Dely = 0.0f;
 		}
@@ -104,8 +111,13 @@ void Play::StepPlay()
 
 	case State_Break:
 		//仮のシーン移動
-		TileBreakNum[0] = 10/*(GaugePower * SideGaugePower) / 100.0f*/;
-		
+		if (GaugePower > 90.0f)
+		{
+			GaugePower = 100.0f;
+		}
+		TileBreakNum[0] = (GaugePower * SideGaugePower) / 100.0f;
+		TileBreakNum[1] = (GaugePower * SideGaugePower) / 100.0f;
+		TileBreakNum[2] = (GaugePower * SideGaugePower) / 100.0f;
 
 		//自動スクロールをする
 
@@ -124,6 +136,7 @@ void Play::StepPlay()
 		if (Dely >= 15.0f && IsBreak == false)
 		{
 			//ディレイをかけてからシーン遷移
+			//g_CurrentSceneID = SCENE_ID_TILEDROW;
 			g_CurrentSceneID = SCENE_ID_FIN_PLAY;
 		}
 		break;
@@ -151,10 +164,11 @@ void Play::DrawPlay()
 
 	//1つ目のゲージ
 	case State_SetPower:
+		//デバック用
 		DrawString(0, 45, "State == State_SetPower", GetColor(0, 0, 255));
 		DrawString(0, 60, "スペースでゲージを止める", GetColor(0, 0, 255));
 		DrawFormatString(0, 75, GetColor(0, 0, 255), "ゲージの量：%f", GaugePower);
-
+		//デバック用
 		
 		//ゲージ(本体)の描画
 		DrawRectGraph(0, a, 0, b, 200, c, Hndl.GaugeHndl, true, false);
@@ -162,26 +176,42 @@ void Play::DrawPlay()
 		DrawGraph(0, 200, Hndl.GaugeFlameHndl, true);
 		DrawGraph(300, 350, Hndl.PlayerHndl[0][0], true);		//プレイヤーの描画(待機)
 		DrawGraph(700, 350, Hndl.CPC_Hndl[0], true);			//CPUの描画
+		for (int i = 0; i < TILE_MAX_NUM; i++)
+		{
+			DrawGraph(300, 570 + i * 55, Hndl.TileHndl[i], true);		//タイルの描画(割れてない)
+		}
 
 		break;
 
 	//2つ目のゲージ
 	case State_SetPoint:
+		//デバック用
 		DrawString(0, 45, "State == State_SetPoint", GetColor(0, 0, 255));
 		DrawString(0, 60, "スペースで状態遷移", GetColor(0, 0, 255));
 		DrawFormatString(0, 75, GetColor(0, 0, 255), "サイドゲージの量：%f", SideGaugePower);
+		//デバック用
 
-		DrawGraph(0, 200, Hndl.SideGaugeHndl, true);		//サイドゲージ(本体)
+		DrawGraph(20, 200, Hndl.SideGaugeHndl, true);		//サイドゲージ(本体)
 		DrawGraph(PosX, PosY, Hndl.SideSelectHndl, true);	//矢印
 		DrawGraph(300, 350, Hndl.PlayerHndl[0][0], true);	//プレイヤーの描画(待機)
 		DrawGraph(700, 350, Hndl.CPC_Hndl[0], true);		//CPUの描画(待機)
+
+		for (int i = 0; i < TILE_MAX_NUM; i++)
+		{
+			DrawGraph(300, 570 + i * 55, Hndl.TileHndl[i], true);		//タイルの描画(割れてない)
+		}
 		break;
 
 
 	//瓦を壊す
 	case State_Break:
+
+		//デバック用
 		DrawString(0, 45, "State == State_Break", GetColor(0, 0, 255));
+		DrawFormatString(0, 30, GetColor(0, 0, 255), "壊れる瓦の数：%d", TileBreakNum[0]);
 		DrawString(0, 15, "Enterで次のシーンにいく", GetColor(255, 0, 0));
+		//デバック用
+
 
 		Anime();
 		DrawGraph(300, 350, Hndl.PlayerHndl[0][PlayerAnimeNum], true);		//プレイヤーの描画(アニメーション)
@@ -190,7 +220,22 @@ void Play::DrawPlay()
 		//アニメーションが終わったら
 		if (IsAnimeFinish == true)
 		{
+			if (FlameCount % 60 == 0)
+			{
+				if (num < TileBreakNum[0])
+				{
+					IsTileDraw[num] = true;
+					num++;
+				}
+			}
 			TileDraw();		//瓦の描画
+		}
+		else
+		{
+			for (int i = 0; i < TILE_MAX_NUM; i++)
+			{
+				DrawGraph(300, 570 + i * 55, Hndl.TileHndl[i], true);		//タイルの描画(割れてない)
+			}
 		}
 
 		break;
@@ -304,7 +349,7 @@ void Play::GaugeUpDown()
 		//ゲージを増やす
 		GaugePower += GaugeVolume;
 		//ゲージが最大になったらスイッチのフラグを変える(101.0fなのは少し判定を緩くするため)
-		if (GaugePower > 100.0f)
+		if (GaugePower >= 100.0f)
 		{
 			SwitchGauge = 1;
 		}
@@ -313,7 +358,7 @@ void Play::GaugeUpDown()
 	case 1:
 		//ゲージを減らす
 		GaugePower -= GaugeVolume;
-		if (GaugePower < 0.0f)
+		if (GaugePower <= 0.0f)
 		{
 			//ゲージが0より小さくになったらスイッチのフラグを変える
 			SwitchGauge = 0;
@@ -333,22 +378,18 @@ void Play::SideGauge()
 		switch (i)
 		{
 		case 0:
-			PosX += 13;
-			if (PosX > 275)
+			PosX += 15;
+			if (PosX + 30 >= InitPosX + SIDEGAUGE_WIDHT)
 			{
 				i = 1;
-				IsRight = false;
-				IsLeft = true;
 			}
 			break;
 
 		case 1:
-			PosX -= 13;
-			if (PosX < -15)
+			PosX -= 15;
+			if (PosX <= InitPosX)
 			{
 				i = 0;
-				IsLeft = false;
-				IsRight = true;
 			}
 			break;
 
@@ -359,26 +400,30 @@ void Play::SideGauge()
 }
 
 //サイドゲージパワー増減関数
-void Play::SideGaugeUpDown()
+void Play::SetSideGauge()
 {
-	if (IsSideGauge == true)
+   	int vol = abs((PosX - InitPosX) - (SIDEGAUGE_WIDHT / 2));
+
+	//判定処理
+	if (vol <= 5)
 	{
-		if (IsRight == true && PosX < 150)
-		{
-			SideGaugePower += SideGaugeVolume;
-		}
-		else if (IsRight == true && PosX > 150)
-		{
-			SideGaugePower -= SideGaugeVolume;
-		}
-		else if (IsLeft == true && PosX > 150)
-		{
-			SideGaugePower += SideGaugeVolume;
-		}
-		else if (IsLeft == true && PosX < 150)
-		{
-			SideGaugePower -= SideGaugeVolume;
-		}
+		SideGaugePower = 100;
+	}
+	else if (vol > 5 && vol <= 30)
+	{
+		SideGaugePower = 80;
+	}
+	else if (vol > 30 && vol <= 55)
+	{
+		SideGaugePower = 60;
+	}
+	else if (vol > 55 && vol <= 105)
+	{
+		SideGaugePower = 40;
+	}
+	else
+	{
+		SideGaugePower = 20;
 	}
 }
 
@@ -402,16 +447,16 @@ void Play::Anime()
 //瓦の描画処理
 void Play::TileDraw()
 {
-	//瓦の描画
+	TilePosY -= 0.8f;
 	for (int i = 0; i < TILE_MAX_NUM; i++)
 	{
-		if (i < TileBreakNum[0])
+		if (IsTileDraw[i] == true)
 		{
-			DrawGraph(0, i * 50, Hndl.TileBreakHndl[i], true);	//壊れた瓦	
+			DrawGraph(300, TilePosY + (float)(i * 50), Hndl.TileBreakHndl[i], true);	//壊れた瓦
 		}
 		else
 		{
-			DrawGraph(0, i * 55, Hndl.TileHndl[i], true);		//壊れてない瓦
+			DrawGraph(300, TilePosY + (float)(i * 55), Hndl.TileHndl[i], true);			//壊れてない瓦
 		}
 	}
 }
