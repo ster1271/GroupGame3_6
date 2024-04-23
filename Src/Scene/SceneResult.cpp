@@ -5,7 +5,7 @@
 
 int R_Result_Selectino_Handle[2];
 int R_Result_Frame_Handle;
-
+int R_Result_Sucoa;
 int NumberFontHndle[10];
 
 int R_ResultPoxX; //ç¿ïW
@@ -25,6 +25,7 @@ void Result::InitResult()
 	R_Result_Selectino_Handle[0] = LoadGraph(RISULT_WIN_SCORE);
 	R_Result_Selectino_Handle[1] = LoadGraph(RISULT_SELECTION);;
 	R_Result_Frame_Handle = LoadGraph(RISULT_FRAME);;
+	R_Result_Sucoa = LoadGraph(ROSILT_SUCOA);;
 
 	NumberFontHndle[10] = { 0 };
 
