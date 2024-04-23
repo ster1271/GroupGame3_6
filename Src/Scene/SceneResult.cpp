@@ -3,12 +3,7 @@
 #include "SceneResult.h"
 #include "../Input/Input.h"
 
-int R_Result_Score_Handle;
-int R_Result_Player1_WIN_Handle;
-int R_Result_Player2_WIN_Handle;
 int R_Result_Selectino_Handle[2];
-int R_Result_Right_Handle;
-int R_Result_Left_Handle;
 int R_Result_Frame_Handle;
 
 int NumberFontHndle[10];
@@ -27,24 +22,15 @@ int currentImageIndex = 0; // 現在の画像のインデックス
 //タイトル初期化
 void Result::InitResult()
 {
-	R_Result_Score_Handle = LoadGraph(RISULT_SCORE);
-	R_Result_Player1_WIN_Handle = LoadGraph(RISULT_PLAYER_1_WIN);
-	R_Result_Player2_WIN_Handle = LoadGraph(RISULT_PLAYER_2_WIN);
 	R_Result_Selectino_Handle[0] = LoadGraph(RISULT_WIN_SCORE);
 	R_Result_Selectino_Handle[1] = LoadGraph(RISULT_SELECTION);;
-	R_Result_Right_Handle = LoadGraph(RISULT_RIGHT);;
-    R_Result_Left_Handle = LoadGraph(RISULT_LEFT);;
 	R_Result_Frame_Handle = LoadGraph(RISULT_FRAME);;
 
 	NumberFontHndle[10] = { 0 };
 
 	LoadDivGraph("Data/ClearImage/number.png", 10, 10, 1, 200, 200, NumberFontHndle);
 	
-	const char* image_paths[WIN_RLSULT] = {
-		RISULT_PLAYER_1_WIN,
-		RISULT_PLAYER_2_WIN,
-		RISULT_SCORE
-	};
+	
 	R_ResultPoxX = 150;
 
 	R_Wins_Score = false;//画像切り替え
@@ -115,8 +101,8 @@ void Result::DrawResult()
 
 
 	DrawGraph(0, 0, R_Result_Selectino_Handle[0], true);
-	DrawGraph(0, 0, images[currentImageIndex], true);
-	DrawString(0, 0, "リザルトシーンです", GetColor(255, 255, 255));
+	DrawString(0, 0, "シフトで次の画面です", GetColor(0, 255, 0));
+	DrawString(0, 10, "エンターで決定です", GetColor(255, 0, 0));
 	
 
 
