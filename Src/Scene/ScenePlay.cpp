@@ -61,6 +61,8 @@ void Play::InitPlay()
 	IsFinish = false;
 	/*======瓦を壊す状態========*/
 
+
+
 	//シーンをプレイ通常処理のシーンへ移動
 	g_CurrentSceneID = SCENE_ID_LOOP_PLAY;
 }
@@ -82,10 +84,10 @@ void Play::StepPlay()
 		{
 			//ゲージ増減処理(時間経過で気持ち早くなる)
 			GaugeUpDown();
-
 			//スペースキーでゲージの増減フラグをおる
 			if (IsKeyPush(KEY_INPUT_SPACE))
 			{
+				PlaySoundMem(Hndl.Roulet02Hndl, DX_PLAYTYPE_NORMAL);
 				IsGauge = false;
 				Dely = 0.0f;
 			}
@@ -109,6 +111,7 @@ void Play::StepPlay()
 			//スペースキーで次の状態へ
 			if (IsKeyPush(KEY_INPUT_SPACE))
 			{
+				PlaySoundMem(Hndl.Roulet02Hndl, DX_PLAYTYPE_NORMAL);
 				SetSideGauge();
 				IsSideGauge = false;
 				Dely = 0.0f;
@@ -125,7 +128,6 @@ void Play::StepPlay()
 
 
 	case State_Break:
-		//仮のシーン移動
 		if (GaugePower > 90.0f)
 		{
 			GaugePower = 100.0f;
