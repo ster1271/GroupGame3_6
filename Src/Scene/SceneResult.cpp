@@ -75,8 +75,8 @@ void Result::DrawResult()
 {
     // その他の描画処理を行う
     DrawGraph(0, 0, R_Result_Selectino_Handle[0], true);
-    DrawString(0, 0, "シフトで次の画面です", GetColor(255, 0, 0));
-    DrawString(0, 20, "エンターで決定です", GetColor(255, 0, 0));
+   /* DrawString(0, 0, "シフトで次の画面です", GetColor(255, 0, 0));
+    DrawString(0, 20, "エンターで決定です", GetColor(255, 0, 0));*/
     // 数字のピクセル画像を読み込む
     int numberImageHandle = LoadGraph(ROSILT_SUCOA);
     // PlayerBreakTile の数字をピクセルで描画

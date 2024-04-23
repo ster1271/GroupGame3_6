@@ -104,19 +104,18 @@ void Play::StepPlay()
 
 	case State_SetPoint:
 
-		if (IsSideGauge == true)
-		{
-			SideGauge();
+		
+		SideGauge();
 
-			//スペースキーで次の状態へ
-			if (IsKeyPush(KEY_INPUT_SPACE))
-			{
-				PlaySoundMem(Hndl.Roulet02Hndl, DX_PLAYTYPE_NORMAL);
-				SetSideGauge();
-				IsSideGauge = false;
-				Dely = 0.0f;
-			}
+		//スペースキーで次の状態へ
+		if (IsKeyPush(KEY_INPUT_SPACE))
+		{
+			PlaySoundMem(Hndl.Roulet02Hndl, DX_PLAYTYPE_NORMAL);
+			SetSideGauge();
+			IsSideGauge = false;
+			Dely = 0.0f;
 		}
+
 
 		if (Dely >= 15.0f && IsSideGauge == false)
 		{
@@ -447,14 +446,14 @@ void Play::Anime()
 //瓦の描画処理
 void Play::TileDraw()
 {
-	TilePosY -= 3.0f;
+	TilePosY -= 5.0f;
 	for (int i = 0; i < TILE_MAX_NUM; i++)
 	{
 		if (IsTileDraw[i] == true)
 		{
 			DrawGraph(510, TilePosY + (float)(i * 50), Hndl.TileBreakHndl[i], true);	//壊れた瓦
 
-			if (TilePosY + (float)(PlayerBreakTile * 50) < -10.0f)
+			if (TilePosY + (float)(PlayerBreakTile / 2 * 50) < -10.0f)
 			{
 				IsFinish = true;
 			}
@@ -475,7 +474,7 @@ void Play::Auto()
 	if (IsFinish == false)
 	{
 		FlameCount++;
-		if (FlameCount % 18 == 0)
+		if (FlameCount % 10 == 0)
 		{
 			if (num < PlayerBreakTile)
 			{
