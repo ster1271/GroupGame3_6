@@ -101,13 +101,16 @@ void Result::DrawResult()
 
 
 	DrawGraph(0, 0, R_Result_Selectino_Handle[0], true);
-	DrawString(0, 0, "シフトで次の画面です", GetColor(0, 255, 0));
-	DrawString(0, 10, "エンターで決定です", GetColor(255, 0, 0));
+	DrawString(0, 0, "シフトで次の画面です", GetColor(255, 0, 0));
+	DrawString(0, 20, "エンターで決定です", GetColor(255, 0, 0));
 	
 
-
-
+		DrawFormatString(650, 600, GetColor(255, 0, 0), "%d", PlayerBreakTile); // 瓦を割った数を描画
+	
 }
+
+
+
 
 //タイトル後処理
 void Result::FinResult()
