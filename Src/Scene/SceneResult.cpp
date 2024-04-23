@@ -19,112 +19,90 @@ bool R_Wins_Score; //画像切り替え
 int images[WIN_RLSULT]; // 画像を格納する配列
 int currentImageIndex = 0; // 現在の画像のインデックス
 
-//タイトル初期化
 void Result::InitResult()
 {
-	R_Result_Selectino_Handle[0] = LoadGraph(RISULT_WIN_SCORE);
-	R_Result_Selectino_Handle[1] = LoadGraph(RISULT_SELECTION);;
-	R_Result_Frame_Handle = LoadGraph(RISULT_FRAME);;
-	R_Result_Sucoa = LoadGraph(ROSILT_SUCOA);;
-
-	NumberFontHndle[10] = { 0 };
-
-	LoadDivGraph("Data/ClearImage/number.png", 10, 10, 1, 200, 200, NumberFontHndle);
-	
-	
-	R_ResultPoxX = 150;
-
-	R_Wins_Score = false;//画像切り替え
-
-	R_Continue = false;		//コンテニューフラグを折る
-
-	R_BackTitle = false;	//タイトルフラグを折る
-
-
-	//リザルトループシーンへ移動
-	g_CurrentSceneID = SCENE_ID_LOOP_RESULT;
+    R_Result_Selectino_Handle[0] = LoadGraph(RISULT_WIN_SCORE);
+    R_Result_Selectino_Handle[1] = LoadGraph(RISULT_SELECTION);
+    R_Result_Frame_Handle = LoadGraph(RISULT_FRAME);
+    R_Result_Sucoa = LoadGraph(ROSILT_SUCOA);
+    NumberFontHndle[10] = { 0 };
+    LoadDivGraph("Data/ClearImage/number.png", 10, 10, 1, 200, 200, NumberFontHndle);
+    R_ResultPoxX = 150;
+    R_Wins_Score = false;
+    R_Continue = false;
+    R_BackTitle = false;
+    g_CurrentSceneID = SCENE_ID_LOOP_RESULT;
 }
-
-//タイトル通常処理
 void Result::StepResult()
 {
-	if (IsKeyPush(KEY_INPUT_SPACE))	//エンターキーを押すと
-	{
-		{
-			R_Wins_Score = true;	//コンテニューフラグを立て
-			if (R_Wins_Score) {
-				//リザルト後処理シーンへ移動
-				DeleteGraph(currentImageIndex);	//クリア背景画像破棄
-				R_Result_Selectino_Handle[0] = R_Result_Selectino_Handle[1] ;
-			}
-		}
-
-}
-		if (IsKeyPush(KEY_INPUT_A) || IsKeyPush(KEY_INPUT_LEFT))	//Aキーまたは左矢印キーが押されたら
-		{
-			if (R_ResultPoxX == 650)
-			{
-				R_ResultPoxX = 150;	//隣に移動する
-			}
-		}
-
-		else if (IsKeyPush(KEY_INPUT_D) || IsKeyPush(KEY_INPUT_RIGHT))	//Dキーまたは右矢印キーが押されたら
-		{
-			if (R_ResultPoxX == 150)
-			{
-				R_ResultPoxX = 650;	//隣に移動する
-			}
-		}
-
-		else if (IsKeyPush(KEY_INPUT_RETURN))	//エンターキーを押すと
-		{
-			if (R_ResultPoxX == 150)
-			{
-				R_Continue = true;	//コンテニューフラグを立てる
-			}
-
-			else if (R_ResultPoxX == 650)
-			{
-				R_BackTitle = true;	//タイトルフラグを折る
-			}
-
-			//リザルト後処理シーンへ移動
-			g_CurrentSceneID = SCENE_ID_FIN_RESULT;
-
-		}
-	
+    if (IsKeyPush(KEY_INPUT_SPACE))
+    {
+        R_Wins_Score = true;
+        if (R_Wins_Score) {
+            DeleteGraph(currentImageIndex);
+            R_Result_Selectino_Handle[0] = R_Result_Selectino_Handle[1];
+        }
+    }
+    if (IsKeyPush(KEY_INPUT_A) || IsKeyPush(KEY_INPUT_LEFT))
+    {
+        if (R_ResultPoxX == 650)
+        {
+            R_ResultPoxX = 150;
+        }
+    }
+    else if (IsKeyPush(KEY_INPUT_D) || IsKeyPush(KEY_INPUT_RIGHT))
+    {
+        if (R_ResultPoxX == 150)
+        {
+            R_ResultPoxX = 650;
+        }
+    }
+    else if (IsKeyPush(KEY_INPUT_RETURN))
+    {
+        if (R_ResultPoxX == 150)
+        {
+            R_Continue = true;
+        }
+        else if (R_ResultPoxX == 650)
+        {
+            R_BackTitle = true;
+        }
+        g_CurrentSceneID = SCENE_ID_FIN_RESULT;
+    }
 }
 
-//タイトル描画処理
+
 void Result::DrawResult()
 {
+    // 数字のピクセル画像を読み込む
+    int numberImageHandle = LoadGraph(ROSILT_SUCOA);
+    // 数字のピクセル画像を描画
+    DrawGraph(150, 100, numberImageHandle, true);
+    // PlayerBreakTile の数字を描画
+    DrawFormatString(650, 600, GetColor(255, 0, 0), "%d", PlayerBreakTile);
+    // 数字のピクセル画像の解放
+    DeleteGraph(numberImageHandle);
 
+    // その他の描画処理を行う
+    DrawGraph(0, 0, R_Result_Selectino_Handle[0], true);
+    DrawString(0, 0, "シフトで次の画面です", GetColor(255, 0, 0));
+    DrawString(0, 20, "エンターで決定です", GetColor(255, 0, 0));
 
-
-	DrawGraph(0, 0, R_Result_Selectino_Handle[0], true);
-	DrawString(0, 0, "シフトで次の画面です", GetColor(255, 0, 0));
-	DrawString(0, 20, "エンターで決定です", GetColor(255, 0, 0));
-	
-
-		DrawFormatString(650, 600, GetColor(255, 0, 0), "%d", PlayerBreakTile); // 瓦を割った数を描画
-	
 }
-
-
-
-
-//タイトル後処理
 void Result::FinResult()
 {
-	DeleteGraph(R_Result_Selectino_Handle[1]);	//クリア背景画像破棄
-	if (R_Continue)	//コンテニューフラグがtrueなら
-	{
-		g_CurrentSceneID = SCENE_ID_INIT_PLAY;	//プレイシーンに戻る
-	}
-
-	else if (R_BackTitle)	//タイトルフラグがtrueなら
-	{
-		g_CurrentSceneID = SCENE_ID_INIT_TITLE;	//タイトルシーンに戻る
-	}
-	
+    DeleteGraph(R_Result_Selectino_Handle[1]);
+    if (R_Continue)
+    {
+        g_CurrentSceneID = SCENE_ID_INIT_PLAY;
+    }
+    else if (R_BackTitle)
+    {
+        g_CurrentSceneID = SCENE_ID_INIT_TITLE;
+    }
 }
+
+
+
+
+
