@@ -101,14 +101,18 @@ void Play::StepPlay()
 		break;
 
 	case State_SetPoint:
-		SideGauge();
-		
-		//スペースキーで次の状態へ
-		if (IsKeyPush(KEY_INPUT_SPACE))
+
+		if (IsSideGauge == true)
 		{
-			SetSideGauge();
-			IsSideGauge = false;
-			Dely = 0.0f;
+			SideGauge();
+
+			//スペースキーで次の状態へ
+			if (IsKeyPush(KEY_INPUT_SPACE))
+			{
+				SetSideGauge();
+				IsSideGauge = false;
+				Dely = 0.0f;
+			}
 		}
 
 		if (Dely >= 15.0f && IsSideGauge == false)
@@ -127,28 +131,6 @@ void Play::StepPlay()
 			GaugePower = 100.0f;
 		}
 		PlayerBreakTile = (GaugePower * SideGaugePower) / 100.0f;
-		
-
-		//自動スクロールをする
-
-
-		if (IsBreak == true)
-		{
-			//Enterキーを押す
-			if (IsKeyPush(KEY_INPUT_RETURN))
-			{
-				//シーンをプレイ通常処理のシーンへ移動
-				Dely = 0.0f;
-				IsBreak = false;
-			}
-		}
-
-		if (Dely >= 15.0f && IsBreak == false)
-		{
-			//ディレイをかけてからシーン遷移
-			//g_CurrentSceneID = SCENE_ID_TILEDROW;
-			g_CurrentSceneID = SCENE_ID_FIN_PLAY;
-		}
 		break;
 
 	default:
@@ -174,11 +156,11 @@ void Play::DrawPlay()
 
 	//1つ目のゲージ
 	case State_SetPower:
-		//デバック用
-		DrawString(0, 45, "State == State_SetPower", GetColor(0, 0, 255));
-		DrawString(0, 60, "スペースでゲージを止める", GetColor(0, 0, 255));
-		DrawFormatString(0, 75, GetColor(0, 0, 255), "ゲージの量：%f", GaugePower);
-		//デバック用
+		////デバック用
+		//DrawString(0, 45, "State == State_SetPower", GetColor(0, 0, 255));
+		//DrawString(0, 60, "スペースでゲージを止める", GetColor(0, 0, 255));
+		//DrawFormatString(0, 75, GetColor(0, 0, 255), "ゲージの量：%f", GaugePower);
+		////デバック用
 		
 		//ゲージ(本体)の描画
 		DrawRectGraph(0, a, 0, b, 200, c, Hndl.GaugeHndl, true, false);
@@ -202,11 +184,11 @@ void Play::DrawPlay()
 
 	//2つ目のゲージ
 	case State_SetPoint:
-		//デバック用
-		DrawString(0, 45, "State == State_SetPoint", GetColor(0, 0, 255));
-		DrawString(0, 60, "スペースで状態遷移", GetColor(0, 0, 255));
-		DrawFormatString(0, 75, GetColor(0, 0, 255), "サイドゲージの量：%f", SideGaugePower);
-		//デバック用
+		////デバック用
+		//DrawString(0, 45, "State == State_SetPoint", GetColor(0, 0, 255));
+		//DrawString(0, 60, "スペースで状態遷移", GetColor(0, 0, 255));
+		//DrawFormatString(0, 75, GetColor(0, 0, 255), "サイドゲージの量：%f", SideGaugePower);
+		////デバック用
 
 		DrawGraph(20, 200, Hndl.SideGaugeHndl, true);		//サイドゲージ(本体)
 		DrawGraph(PosX, PosY, Hndl.SideSelectHndl, true);	//矢印
@@ -229,11 +211,11 @@ void Play::DrawPlay()
 	//瓦を壊す
 	case State_Break:
 
-		//デバック用
-		DrawString(0, 45, "State == State_Break", GetColor(0, 0, 255));
-		DrawFormatString(0, 30, GetColor(0, 0, 255), "壊れる瓦の数：%d", PlayerBreakTile);
-		DrawString(0, 15, "Enterで次のシーンにいく", GetColor(255, 0, 0));
-		//デバック用
+		////デバック用
+		//DrawString(0, 45, "State == State_Break", GetColor(0, 0, 255));
+		//DrawFormatString(0, 30, GetColor(0, 0, 255), "壊れる瓦の数：%d", PlayerBreakTile);
+		//DrawString(0, 15, "Enterで次のシーンにいく", GetColor(255, 0, 0));
+		////デバック用
 
 
 		Anime();
@@ -266,7 +248,7 @@ void Play::DrawPlay()
 		break;
 	}
 
-	DrawString(0, 0, "プレイシーンです", GetColor(255, 0, 0));
+	//DrawString(0, 0, "プレイシーンです", GetColor(255, 0, 0));
 }
 
 //プレイ後処理
@@ -332,6 +314,11 @@ void Play::LoadHundl()
 		Hndl.TileHndl[i] = LoadGraph(TILE_HUNDLE_PATH);				//瓦の画像(割れる前)読み込み
 		Hndl.TileBreakHndl[i] = LoadGraph(TILE_BREAK_HUNDLE_PATH);	//瓦の画像(割れた後)読み込み
 	}
+
+	Hndl.Roulet01Hndl = LoadSoundMem("Data/Sound/電子ルーレット回転中.mp3");
+	Hndl.Roulet02Hndl = LoadSoundMem("Data/Sound/電子ルーレット停止ボタンを押す.mp3");
+	Hndl.PunchSoundHndl = LoadSoundMem("Data/Sound/大パンチ.mp3");
+
 }
 
 

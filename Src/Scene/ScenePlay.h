@@ -74,6 +74,11 @@ struct HUNDL
 	int CPC_Hndl[ANIME_MAX_NUM];		//CPU画像ハンドル
 	int PlayerHndl[ANIME_MAX_NUM];	//プレイヤー画像ハンドル
 
+	int Roulet01Hndl;
+	int Roulet02Hndl;
+
+	int PunchSoundHndl;
+
 };
 
 class Play
